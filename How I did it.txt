@@ -1,0 +1,195 @@
+---------------------------------------------------------------------------
+Rubicon new crack (COPY). (because of a challenge with my friend flavioweb)
+---------------------------------------------------------------------------
+Recreating the original protection, without even reversing the loader code.
+---------------------------------------------------------------------------
+                          By Zibri / RamJam
+---------------------------------------------------------------------------
+
+Hello!
+I like nice challenges and by the time Rubicon (which I never played) came out
+my heart was already starting to beat for the Amiga.
+Since no program at the time could copy Rubicon, I think it would have been fun to be able to do it
+with a bare commodore 64 and an unmodified 1541.
+
+So, let's start like we were in 1990 and without owning anything else than:
+
+1) a Commodre 64
+2) a Commodore 1541 disk drive
+3) a Rubicon original disk.
+
+The challenge: being able to create a working copy.
+
+Let's analyze the original disk!
+
+By scanning the disk I soon realized there was an error on sector 18 of track 18:
+
+ERROR 22: DATA BLOCK NOT PRESENT
+
+So let's code a small program to low level read the sector starting from the sector header
+and until the end of the track.
+
+The program in short will do this:
+    JSR $F50A  ; Find start of data block
+then read 512 bytes and save them in memory then read them from the C64.
+
+The result was this:
+
+00000000h: 2F 1B 49 29 75 9F 53 AA 5D 95 19 34 AC A6 73 A5 ; /.I)uŸSª]•.4¬¦s¥
+00000010h: D7 9F 35 DF 19 D5 56 31 63 2B E4 58 AA FB D6 2A ; ×Ÿ5ß.ÕV1c+äXªûÖ*
+00000020h: BE 6E D4 AA E5 BB AE AB B7 25 AE 6B B2 B4 A7 99 ; ¾nÔªå»®«·%®k²´§™
+00000030h: 9B 7A 54 62 44 88 9C 9C 98 A3 16 96 49 94 D2 32 ; ›zTbDˆœœ˜£.–I”Ò2
+00000040h: 28 A3 52 A6 A6 A7 A4 63 C6 2B 2B DE 29 4D 9E A8 ; (£R¦¦§¤cÆ++Þ)Mž¨
+00000050h: CA 5B 59 D7 EB BA 5B C8 EA 35 49 4B 53 5D AD 5F ; Ê[Y×ëº[Èê5IKS]­_
+00000060h: E5 AE 5C 62 28 C4 48 D5 AA FA 65 AA 31 22 8A 5B ; å®\b(ÄHÕªúeª1"Š[
+00000070h: 75 5D E6 D5 5C 63 BE 7A 31 18 C8 E8 FD 55 A9 93 ; u]æÕ\c¾z1.ÈèýU©“
+00000080h: 5A B6 9A BA EB 32 A7 57 66 F7 AD 53 CF 37 EA 57 ; Z¶šºë2§Wf÷­SÏ7êW
+00000090h: 6B AA 28 C4 44 49 88 A4 55 B3 9B 8A 58 8D 11 44 ; kª(ÄDIˆ¤U³›ŠX.D
+000000a0h: CA 52 A9 1A CE AA 96 A2 94 92 B4 A9 C8 C5 5D AA ; ÊR©.Îª–¢”’´©ÈÅ]ª
+000000b0h: 54 DB AB ED B1 8D 15 7B 33 A6 F6 D1 F5 B7 6D 2C ; TÛ«í±.{3¦öÑõ·m,
+000000c0h: F1 89 18 89 47 A5 2F 4E 91 AA B9 A3 14 54 89 CB ; ñ‰.‰G¥/N‘ª¹£.T‰Ë
+000000d0h: B3 91 8C AD 96 AF 9E B9 AD 72 A2 F7 CB DD 95 2A ; ³‘Œ­–¯ž¹­r¢÷ËÝ•*
+000000e0h: FB 2A A3 96 A7 66 68 B6 EA B6 D4 93 FB 35 96 AF ; û*£–§fh¶ê¶Ô“û5–¯
+000000f0h: EA DD DF D4 49 E9 53 EF B5 AD 2B A4 62 55 E5 3D ; êÝßÔIéSïµ­+¤bUå=
+00000100h: E8 F5 AD 6B 5A D6 B5 AD 6B 5A D6 B5 AD 6B 5A D6 ; èõ­kZÖµ­kZÖµ­kZÖ
+00000110h: B5 AD 6B 5A D6 B5 AD 6B 5A D6 B5 AD 6B 5A D6 B5 ; µ­kZÖµ­kZÖµ­kZÖµ
+00000120h: AD 6B 5A D6 B5 AD 6B 5A D6 B5 AD 6B 5A D6 B5 AD ; ­kZÖµ­kZÖµ­kZÖµ­
+00000130h: 6B 5A D6 B5 AD 6B 5B B6 B5 AD 6B 55 7A B5 AD 6D ; kZÖµ­k[¶µ­kUzµ­m
+00000140h: A5 29 4A 49 4A 52 94 A5 29 4A 52 94 A5 29 4A 52 ; ¥)JIJR”¥)JR”¥)JR
+00000150h: 94 A5 29 4A 52 9C 63 55 55 55 55 55 55 55 55 55 ; ”¥)JRœcUUUUUUUUU
+
+If we just rewrite this sector on a quickcopied rubicon disk, the game won't start.
+So let's analyze the bytes one bye one, the block data start with 2F 1B
+Which in binary is: 00101111 00011011
+(Originally this probaby was: 00101111 00000011 $2F $03)
+
+A 1541 drive can't read 4 zeroes in a row and that's why GCR encoding has a restriction of not more than 2 "0" one after the other.
+But here we clearly can see 3 zeroes. That can mean that there were more than 3 and if half bit was skipped by the drive, a desync would have taken place.
+
+If that happens, reading the sector multiple times will give different results. Let's try to read it again:
+
+00000000h: 2F 15 A4 94 BA CF A9 D5 2E CA 8C 9A 56 53 39 D2 ; /.¤”ºÏ©Õ.ÊŒšVS9Ò
+00000010h: EB CF 9A EF 8C EA AB 18 C4 4A F9 18 AA BE F5 8A ; ëÏšïŒê«.ÄJù.ª¾õŠ
+00000020h: AF 9B B5 2A B9 6E EB AA ED C9 6B 9A EC AD 29 E6 ; ¯›µ*¹nëªíÉkšì­)æ
+00000030h: 66 DE 95 18 91 45 27 27 26 3C 71 96 49 94 D2 31 ; fÞ•.‘E''&<q–I”Ò1
+00000040h: 11 8C 4C A9 A9 A9 E9 1B 14 4E CA F7 8A 69 B3 D5 ; .ŒL©©©é..NÊ÷Ši³Õ
+00000050h: 15 65 B5 9D 7E BB A5 BC 8C 62 AA 4A 5A 9A ED 6A ; .eµ~»¥¼ŒbªJZšíj
+00000060h: FF 2D 72 E3 22 79 22 4A B5 5F 4C B5 45 2C 44 A5 ; ÿ-rã"y"Jµ_LµE,D¥
+00000070h: B7 55 DE 6D 55 C6 3B E7 A2 8D 89 18 CB F5 56 A6 ; ·UÞmUÆ;ç¢‰.ËõV¦
+00000080h: 4D 6A DA 6A EB AC CA 9D 5D 9B DE B5 4F 3C DF A9 ; MjÚjë¬Ê]›ÞµO<ß©
+00000090h: 5D AE A8 E3 28 A2 31 22 46 AD 9C DC 68 A2 2A A2 ; ]®¨ã(¢1"F­œÜh¢*¢
+000000a0h: 8C 53 24 63 59 D5 52 D4 63 24 AD 2A 72 2B 55 DA ; ŒS$cYÕRÔc$­*r+UÚ
+000000b0h: A5 4D BA BE DB 18 91 D7 B3 3A 6F 6D 1F 5B 76 D2 ; ¥Mº¾Û.‘×³:om.[vÒ
+000000c0h: CF 18 C5 12 29 1D 29 7A 74 8D 55 CD 15 89 11 8B ; Ï.Å.).)ztUÍ.‰.‹
+000000d0h: 97 67 22 99 5B 2D 5F 3D 73 5A E5 45 DF 2F 76 54 ; —g"™[-_=sZåEß/vT
+000000e0h: AB EC AA 8E 5A 9D 99 A2 DB AA DB 52 4F EC D6 5A ; «ìªŽZ™¢ÛªÛROìÖZ
+000000f0h: BF AB 77 7F 51 27 A5 4F BE D6 B4 AE 91 49 57 94 ; ¿«wQ'¥O¾Ö´®‘IW”
+00000100h: F7 A3 D6 B5 AD 6B 5A D6 B5 AD 6B 5A D6 B5 AD 6B ; ÷£Öµ­kZÖµ­kZÖµ­k
+00000110h: 5A D6 B5 AD 6B 5A D6 B5 AD 6B 5A D6 B5 AD 6B 5A ; ZÖµ­kZÖµ­kZÖµ­kZ
+00000120h: D6 B5 AD 6B 5A D6 B5 AD 6B 5A D6 B5 AD 6B 5A D6 ; Öµ­kZÖµ­kZÖµ­kZÖ
+00000130h: B5 AD 6B 5A D6 B5 AD 6E DA D6 B5 AD 55 EA D6 B5 ; µ­kZÖµ­nÚÖµ­UêÖµ
+00000140h: B6 94 A5 29 25 29 4A 52 94 A5 29 4A 52 94 A5 29 ; ¶”¥)%)JR”¥)JR”¥)
+00000150h: 4A 52 94 A5 29 4A 71 95 55 55 55 55 55 55 55 55 ; JR”¥)Jq•UUUUUUUU
+
+The data "changed", some bits were skipped and some other by consequence were inverted.
+
+So, clearly there is one or more zeroes at the start of the data block.
+Since the first 2 bytes of the data block contain 3 zeroes, I assumed those were originally all zeroes.
+So, let's write "00 00" as the first two byte of the data block and let's write it back!
+To avoid writing on the start of track 18, I will only write 256 bytes just for testing, also because the
+end of the sector looks like valid GCR code (and probably useless) !
+
+Let's code a a program that writes 256 bytes in the data block of sector 18 of track 18:
+
+The core of the program is this:
+
+    JSR $F510 ; find block header
+
+    LDX #$08  ; Skip the GAP
+w1  BVC w1
+    CLV
+    DEX
+    BNE w1
+    LDA #$FF  ; Output
+    STA $1C03
+    LDA #$CE  ; Write
+    STA $1C0C
+
+    LDA #$FF
+    LDX #$05  ; Write 5 FF (SYNC)
+
+
+w2  BVC w2
+    CLV
+    STA $1C01
+    DEX
+    BNE w2
+
+; and here we write back our sector with 2 zeroes as first 2 bytes:
+
+    STX SECTORDATA
+	STX SECTORDATA+1
+wl
+    LDA SECTORDATA,X
+w4  BVC w4
+    CLV
+    STA $1C01
+    INX
+    BNE wl
+
+    LDA #$EC  ; Read
+    STA $1C0C
+
+    LDY #$00  ; Input
+    STY $1C03 
+
+    RTS
+
+And.... it worked!
+
+Are all these bytes really needed and checked by the loader?
+I started removing bytes from the end of the sector up.
+The game always worked until I removed the byte at offset $6B
+So for now the relevant bytes are:
+
+00000000h: 00 00 49 29 75 9F 53 AA 5D 95 19 34 AC A6 73 A5 
+00000010h: D7 9F 35 DF 19 D5 56 31 63 2B E4 58 AA FB D6 2A 
+00000020h: BE 6E D4 AA E5 BB AE AB B7 25 AE 6B B2 B4 A7 99 
+00000030h: 9B 7A 54 62 44 88 9C 9C 98 A3 16 96 49 94 D2 32 
+00000040h: 28 A3 52 A6 A6 A7 A4 63 C6 2B 2B DE 29 4D 9E A8 
+00000050h: CA 5B 59 D7 EB BA 5B C8 EA 35 49 4B 53 5D AD 5F 
+00000060h: E5 AE 5C 62 28 C4 48 D5 AA FA 65 AA 
+
+And the game still works!
+
+Removing all bytes containing more than 3 zeroes and using a little logic,
+I found that most of the data is useless except the data at offset $20-2F and $68-$6B
+So, imagining that what the loader does is:
+1) read the sector twice and see if data changes
+2) find an alignment and check those bytes (skipping anything in between)
+
+After some trial and error, I found that the minimum bytes that pass the protection are just 29.
+2 zeroes for desync, a gap of 6 bytes, 16 bytes, followed by the last 4 and a final gap of 1 byte.
+
+So all we need to write in the data block of sector 18 of track 18 of an otherwise totally normal disk is this:
+
+.BYTE  $00, $00, $AA, $AA, $AA, $AA, $AA, $AA
+.BYTE  $BE, $6E, $D4, $AA, $E5, $BB, $AE, $AB
+.BYTE  $B7, $25, $AE, $6B, $B2, $B4, $A7, $99
+.BYTE  $AA, $FA, $65, $AA, $AA
+
+Or the shifted right version also works:
+
+.BYTE  $00, $00, $55, $55, $55, $55, $55, $55
+.BYTE  $5F, $37, $6A, $55, $72, $DD, $D7, $55
+.BYTE  $DB, $92, $D7, $35, $D9, $5A, $53, $CC
+.BYTE  $D5, $7D, $32, $D5, $55
+
+
+Since the author of this protection scheme included
+funny messages like "LICK MY USERPORT" around the disk,
+I can't avoid to end this document with a message to Siegfried Jagott:
+"YANK MY JOYSTICK" :D
+
+Cheers,
+Zibri / RamJam
