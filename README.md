@@ -10,7 +10,7 @@
 
 Copy these 2 D64 on the 2 sides of a floppy disk.
 <a href="https://github.com/Zibri/Rubicon-C64/raw/main/Rubicon_Side_A.d64">Side A</a>
-<a href="https://github.com/Zibri/Rubicon-C64/raw/main/Rubicon_Side_B.d64">Side A</a>
+<a href="https://github.com/Zibri/Rubicon-C64/raw/main/Rubicon_Side_B.d64">Side B</a>
 
 Then insert disk on Side A into the drive and:
 
