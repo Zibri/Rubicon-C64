@@ -8,8 +8,8 @@
 
 # To rebuild the original protected disk (and obtain a clean master)
 
-Copy these 2 D64 on the 2 sides of a floppy disk.
-<a href="https://github.com/Zibri/Rubicon-C64/raw/main/Rubicon_Side_A.d64">Side A</a>
+Copy these 2 D64 on the 2 sides of a floppy disk.   
+<a href="https://github.com/Zibri/Rubicon-C64/raw/main/Rubicon_Side_A.d64">Side A</a>   
 <a href="https://github.com/Zibri/Rubicon-C64/raw/main/Rubicon_Side_B.d64">Side B</a>
 
 Then insert disk on Side A into the drive and:
@@ -22,10 +22,10 @@ WP.PRG will write the protection track on track #18
 
 # Alternatevely, to copy the protection from the original RUBICON DISK
 
-insert the original rubicon disk.
-Load and run <a href="https://github.com/Zibri/Rubicon-C64/raw/main/rubicopy.prg">RUBICOPY.PRG</a> ONCE.
-Insert the disk where you quickcopied RUBICON.
-Load and run <a href="https://github.com/Zibri/Rubicon-C64/raw/main/rubicopy.prg">RUBICOPY.PRG</a>.
+insert the original rubicon disk.   
+Load and run <a href="https://github.com/Zibri/Rubicon-C64/raw/main/rubicopy.prg">RUBICOPY.PRG</a> ONCE.   
+Insert the disk where you quickcopied RUBICON.   
+Load and run <a href="https://github.com/Zibri/Rubicon-C64/raw/main/rubicopy.prg">RUBICOPY.PRG</a>.   
 
 # Result
 
