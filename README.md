@@ -14,11 +14,11 @@ Copy these 2 D64 on the 2 sides of a floppy disk.
 
 Then insert disk on Side A into the drive and:
 
-LOAD"WP",8
+<a href="https://github.com/Zibri/Rubicon-C64/raw/main/wp.prg">LOAD"WP",8</a>   
 
 RUN
 
-WP.PRG will write the protection track on track #18
+WP.PRG will write the protection track on track #18 <a href="https://github.com/Zibri/Rubicon-C64/raw/main/wp.s">(source)</a>
 
 # Alternatevely, to copy the protection from the original RUBICON DISK
 
