@@ -23,7 +23,8 @@ WP.PRG will write the protection track on track #18
 # Alternatevely, to copy the protection from the original RUBICON DISK
 
 insert the original rubicon disk.   
-Load and run <a href="https://github.com/Zibri/Rubicon-C64/raw/main/rubicopy.prg">RUBICOPY.PRG</a> ONCE.   
+Load and run <a href="https://github.com/Zibri/Rubicon-C64/raw/main/rubicopy.prg">RUBICOPY.PRG</a> ONCE.  
+<a href="https://github.com/Zibri/Rubicon-C64/blob/main/rubcopy.s">You can find the source here.</a>   
 Insert the disk where you quickcopied RUBICON.   
 Load and run <a href="https://github.com/Zibri/Rubicon-C64/raw/main/rubicopy.prg">RUBICOPY.PRG</a>.   
 
