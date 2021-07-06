@@ -1,0 +1,119 @@
+-----------------------------------------------------------------------------------
+Rubicon protection defeat (COPY). (because of a challenge with my friend flavioweb)
+-----------------------------------------------------------------------------------
+         Skipping the protection, without even reversing the loader code.
+    ---------------------------------------------------------------------------
+                                 By Zibri / RamJam
+    ---------------------------------------------------------------------------
+
+Hello!
+I like nice challenges and by the time Rubicon (which I never played) came out
+my heart was already starting to beat for the Amiga.
+
+Since no program at the time could copy Rubicon, I think it would have been fun to be able to do it
+with a bare commodore 64 and an unmodified 1541.
+
+So, let's start like we were in 1990 and without owning anything else than:
+
+1) a Commodre 64
+2) a Commodore 1541 disk drive
+3) a Rubicon original disk.
+
+The challenge: being able to create a working copy on a normal disk and
+skipping the original protection check.
+
+By resetting the C64 during the first part of the loading
+and analyzing drive contents, it is clear that the drive is loading from
+track 17.
+In track17 there is an invisible file starting at sector 1.
+So, to load an invisible file we have 2 options:
+a) create a directory entry for the file and make it point to track 17 sector 1
+b) trick the drive into thinking that the last file loaded (*) started at track 17 sector 1 then load"*",8,1
+
+To trick the drive into loading from an arbitrary track and sector,
+all we have to do is to put the track in $7E and the sector in $26F then load"*",8,1
+So we do:
+open15,8,15,"i"
+print#15,"m-w"chr$(126)chr$(0)chr$(1)chr$(17)
+print#15,"m-w"chr$(111)chr$(2)chr$(1)chr$(1)
+close15
+load"*",8,1
+
+The hidden program is loaded at $12ab until $235c.
+
+Surprisingly, at $235a we have an unprotected JMP $2AB.
+
+That ending JMP is our HOOK to the original loader to start understanding what it does
+and how to fool it.
+
+Since the loader uses a heavy obfuscation using CIA timers, no intervention inside the timed
+loops will be possible. So we have to think out of the box.
+Literally "out of the box" (the c64) is the 1541 drive. And that's were we will work!
+
+First of all we have to understand what the loader sends to the drive.
+To do so there are many ways and I will first try the easiest:
+
+a) remove the disk from drive while it shows blue and white lines (that's when the drivecode is uploaded in the drive)
+b) as you hear the head rattling, disconnect the IEC cable, reset the c64 and reconnect the IEC cable.
+   (Or reset the C64 using a reset button.)
+c) dump 1541 memory contents.
+
+And here we have our drivecode between addresses $400 and $6C0.
+
+Incredibly enough, the drivecode is not obfuscated and it is still there!
+
+How is this possible?
+The programmer probably didn't know about the dangerous behaviour of $D005 routine:
+If any error is encountered during the [I]nitialize ($D005) routine, the routine doesn't
+return control to the calling program but jumps straight to the error routine and then again
+to the main drive loop resuming normal drive operations.
+By removing the disk from the drive suring the code upload (white/blue stripes on screen)
+we cause this behaviour and by just resetting the C64 we will have full access to the drive and
+we can therefore dump the "precious" drive code.
+
+By studying the drivecode here is what happens:
+
+1) drive is initialized by a jmp to $d005
+2) execution proceeds at $400 setting track 18 and sector 18 as destination.
+3) the first 256 of the sector GCR DATA are loaded at $700-$7FF
+4) the sector is loaded again and again until it's data "changes". If it doesn't the drive is erased and initialized by a jmp to $EAA0
+5) two patters are searched in the sector data:
+   AA FA 65 AA   and
+   7C DD A9 55 CB 77 5D 57 6E 48
+   and if not found.. JMP EAA0  :D
+
+6) 5 GCR bytes are decoded after the magic 10 bytes of the last pattern found: 5c d7 65 69 4f >> 13 16 0a 05
+7) the second and fourth binary decoded bytes are the saved in location $542 and $544.
+8) after this I lost my interest because all we have to do to skip the protection is to
+   write $542 and $544 at the start of the drivecode and then JMP to $4AC which is the location after
+   STEP 7.
+
+To know these two bytes, all we have to do is to put an RTS at $4AC and execute the drivecode on the original disk.
+we will get #$16 and #$05.
+
+So now our task is to write 2 lda 2 sta and a jmp at $4ac before the code is executed in the drive.
+
+Hooking to the original loader, my choice was to send my own drivecode before the jump to $2AB.
+
+My (innovative) drivecode does basically this:
+
+1) an "IRQ task" (D0) waits for $200 to contain "I" and changes it to anything else
+   to avoid the drive initialize command to be executed.
+2) it disables itself then loads another piece of code at $300 which waits for $202 to contain "E".
+3) at this point it writes the patch at $400 and disables itself.
+
+The patch will just be:
+
+$400:
+    lda #$16
+	  sta $542
+	  lda #$05
+	  sta $544
+	  jmp $4a5
+
+Putting all together:
+
+adding 1 sector to the original hidden loader, executes my drivecode loading code before jumping to $2AB.
+in the end only 2 sectors of the original disk are modified.
+
+The included program PP.PRG applies the patch to a "quick copied" rubicon side A disk (which otherwise won't work).
