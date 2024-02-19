@@ -128,7 +128,7 @@ w2  BVC w2
 ; and here we write back our sector with 2 zeroes as first 2 bytes:
 
     STX SECTORDATA
-	STX SECTORDATA+1
+    STX SECTORDATA+1
 wl
     LDA SECTORDATA,X
 w4  BVC w4
