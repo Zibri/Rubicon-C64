@@ -77,7 +77,7 @@ By studying the drivecode here is what happens:
 2) execution proceeds at $400 setting track 18 and sector 18 as destination.
 3) the first 256 of the sector GCR DATA are loaded at $700-$7FF
 4) the sector is loaded again and again until it's data "changes". If it doesn't the drive is erased and initialized by a jmp to $EAA0
-5) two patters are searched in the sector data:
+5) two patterns are searched in the sector data:
    AA FA 65 AA   and
    7C DD A9 55 CB 77 5D 57 6E 48
    and if not found.. JMP EAA0  :D
