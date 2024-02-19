@@ -67,7 +67,7 @@ The programmer probably didn't know about the dangerous behaviour of $D005 routi
 If any error is encountered during the [I]nitialize ($D005) routine, the routine doesn't
 return control to the calling program but jumps straight to the error routine and then again
 to the main drive loop resuming normal drive operations.
-By removing the disk from the drive suring the code upload (white/blue stripes on screen)
+By removing the disk from the drive during the code upload (white/blue stripes on screen)
 we cause this behaviour and by just resetting the C64 we will have full access to the drive and
 we can therefore dump the "precious" drive code.
 
