@@ -5,11 +5,7 @@
    .ORG $500
 
     BEQ START
-
-;    LDA $24F
-;    ORA #$4         ; MAP ALLOCATED BUFFERS (allocate buffer 2)
-;    STA $24F        ; This prevents the code section $500-$5ff to be overwritten.
-
+    
     LDA $22
     BNE MAIN
 
@@ -19,9 +15,9 @@ MAIN
 
     JSR $C100       ; Turn LED on.
 
-    LDA #$12        ; track 35 ; POKE 2516  to change track (remember that the sync track will always be T+2)
+    LDA #$12        ; track 18
     STA $A          ; track for E0 command (move before start)
-;   LDA #$12        ; sector number
+;   LDA #$12        ; sector 18
     STA $B          ; for E0
 
     LDA #$E0
@@ -29,10 +25,6 @@ MAIN
 WE0
     LDA $2
     BNE WE0
-
-;    LDA $24F
-;    AND #$FB        ; UNMAP ALLOCATED BUFFERS (deallocate buffers 2)
-;    STA $24F        ; This frees the allocated buffer.
 
     JMP $D005
 
