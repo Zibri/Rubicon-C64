@@ -185,11 +185,15 @@ Or the shifted right version also works:
 .BYTE  $DB, $92, $D7, $35, $D9, $5A, $53, $CC
 .BYTE  $D5, $7D, $32, $D5, $55
 
+A message from the author:
 
-Since the author of this protection scheme included
-funny messages like "LICK MY USERPORT" around the disk,
-I can't avoid to end this document with a message to Siegfried Jagott:
-"YANK MY JOYSTICK" :D
+THIS PROGRAMM WAS PROTECTED BY ME , SIGI JAGOTT OF AMOK PROTECTION SYSTEMS !!
+SEE YOU LAMER IF YOU CRACK THIS !!
+BYE
+
+So long, NEUROPROTECT V1.1 (C) BY SJ/AMOK !
+Time for a V2.0? :D
+
 
 Cheers,
 Zibri / RamJam
