@@ -105,11 +105,12 @@ My (innovative) drivecode does basically this:
 The patch will just be:
 
 $400:
+
     lda #$16
-	  sta $542
-	  lda #$05
-	  sta $544
-	  jmp $4a5
+    sta $542
+    lda #$05
+    sta $544
+    jmp $4a5
 
 Putting all together:
 
